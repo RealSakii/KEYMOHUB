@@ -191,7 +191,7 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
---ESP Players
+--
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -235,7 +235,7 @@ local function createESP(character, player)
 			local dist = (myChar.HumanoidRootPart.Position -
 				character.HumanoidRootPart.Position).Magnitude
 
-			text.Text = player.Name .. " | " .. math.floor(dist) ..
+			text.Text = player.Name .. " | " .. math.floor(dist) .. " "
 		end
 	end)
 end
@@ -272,6 +272,7 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		end
 	end
 end)
+
 
 
 -------------------------------------------------------------------------
@@ -393,6 +394,7 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		update(5)
 	end
 end)
+
 
 
 
