@@ -191,6 +191,12 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+
+
+-------------------------------------------------------------------------
+
+
+
 --Guiเเสดงสถานะ
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -218,6 +224,7 @@ frame.Size = UDim2.new(0, 300, 0, 230)
 frame.Position = UDim2.new(0.4, 0, 0.35, 0)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.Active = true
+frame.Visible = false
 frame.Draggable = true
 frame.Parent = gui
 
@@ -300,3 +307,4 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		update(4)
 	end
 end)
+
