@@ -36,9 +36,9 @@ local TextBox = Instance.new("TextBox")
 TextBox.Parent = Frame
 TextBox.Size = UDim2.new(1,-40,0,35)
 TextBox.Position = UDim2.new(0,20,0,60)
-TextBox.PlaceholderText = "ใส่ Key ที่นี่"
+TextBox.PlaceholderText = "ใส่ KEY ที่นี่"
 TextBox.Text = ""
-TextBox.Font = Enum.Font.Gotham
+TextBox.Font = Enum.Font.GothamBold
 TextBox.TextSize = 14
 TextBox.BackgroundColor3 = Color3.fromRGB(45,45,45)
 TextBox.TextColor3 = Color3.new(1,1,1)
@@ -48,7 +48,7 @@ local Button = Instance.new("TextButton")
 Button.Parent = Frame
 Button.Size = UDim2.new(1,-40,0,35)
 Button.Position = UDim2.new(0,20,0,105)
-Button.Text = "ยืนยัน Key"
+Button.Text = "🔑 ยืนยัน KEY"
 Button.Font = Enum.Font.GothamBold
 Button.TextSize = 14
 Button.BackgroundColor3 = Color3.fromRGB(0,170,255)
@@ -453,11 +453,12 @@ end)
 		--------------------------------
 
 	else
-		Button.Text = "❌ Key ไม่ถูกต้อง"
+		Button.Text = "❌ KEY ไม่ถูกต้อง"
 		wait(1)
-		Button.Text = "ยืนยัน Key"
+		Button.Text = "🔑 ยืนยัน KEY"
 	end
 end)
+
 
 
 
