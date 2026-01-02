@@ -288,11 +288,11 @@ local player = Players.LocalPlayer
 
 -- ตั้งชื่อปุ่มแต่ละอัน
 local keyNames = {
-	[1] = "วิ่งไว",
-	[2] = "กระโดดสูง",
-	[3] = "วาร์ป",
-	[4] = "Lock On",
-	[5] = "Attach Follow"
+	[1] = "วิ่งไว(X)",
+	[2] = "กระโดดสูง(B)",
+	[3] = "วาร์ป(T)",
+	[4] = "Lock On(M3)",
+	[5] = "Attach Follow(Y)"
 }
 
 -- สถานะ
@@ -309,7 +309,7 @@ frame.Size = UDim2.new(0, 300, 0, 250)
 frame.Position = UDim2.new(0.4, 0, 0.35, 0)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.Active = true
-frame.Visible = false
+frame.Visible = true
 frame.Draggable = true
 frame.Parent = gui
 
@@ -333,7 +333,7 @@ for i = 1, 5 do
 	label.Size = UDim2.new(0.9, 0, 0, 30)
 	label.Position = UDim2.new(0.05, 0, 0, 40 + (i * 35))
 	label.BackgroundColor3 = Color3.fromRGB(170, 50, 50)
-	label.Text = keyNames[i] .. " [ปิด]"
+	label.Text = keyNames[i] .. ": ปิด"
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
 	label.Font = Enum.Font.GothamBold
 	label.TextScaled = true
@@ -348,10 +348,10 @@ end
 -- อัปเดต UI
 local function update(i)
 	if states[i] then
-		labels[i].Text = keyNames[i] .. " [เปิด]"
+		labels[i].Text = keyNames[i] .. ": เปิด"
 		labels[i].BackgroundColor3 = Color3.fromRGB(50, 170, 80)
 	else
-		labels[i].Text = keyNames[i] .. " [ปิด]"
+		labels[i].Text = keyNames[i] .. ": ปิด"
 		labels[i].BackgroundColor3 = Color3.fromRGB(170, 50, 50)
 	end
 end
@@ -381,10 +381,10 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		update(2)
 
 	elseif input.KeyCode == Enum.KeyCode.T then
-		labels[3].Text = keyNames[3] .. " [เปิด]"
+		labels[3].Text = keyNames[3] .. ": เปิด"
 		labels[3].BackgroundColor3 = Color3.fromRGB(50, 170, 80)
 		Wait(0.1)
-		labels[3].Text = keyNames[3] .. " [ปิด]"
+		labels[3].Text = keyNames[3] .. ": ปิด"
 		labels[3].BackgroundColor3 = Color3.fromRGB(170, 50, 50)
 
 	elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
@@ -396,6 +396,7 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		update(5)
 	end
 end)
+
 
 
 
