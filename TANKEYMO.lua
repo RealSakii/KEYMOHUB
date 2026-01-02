@@ -103,196 +103,87 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 
 end)
 
---// Smart Smooth Aimbot (FOV = ON , No FOV = OFF)
-
+--// Sticky Attach Follow (Press Y)
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
-local Camera = workspace.CurrentCamera
-
-local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
-
--- SETTINGS
-local AIM_KEY = Enum.UserInputType.MouseButton2
-local FOV_RADIUS = 500
-local MAX_DISTANCE = 350
-local SMOOTHNESS = 1.5
-local AIM_PART = "HumanoidRootPart"
-
-local FOV_ENABLED = false -- 🔵 เปิด = aimbot ทำงาน
-
--- FOV Circle
-local FOV = Drawing.new("Circle")
-FOV.Color = Color3.fromRGB(255, 255, 255)
-FOV.Thickness = 2
-FOV.NumSides = 100
-FOV.Radius = FOV_RADIUS
-FOV.Filled = false
-FOV.Visible = FOV_ENABLED
-
--- Toggle FOV (ควบคุม aimbot ด้วย)
-UIS.InputBegan:Connect(function(input, gpe)
-	if gpe then return end
-	if input.UserInputType == Enum.UserInputType.MouseButton3 then
-		FOV_ENABLED = not FOV_ENABLED
-		FOV.Visible = FOV_ENABLED
-	end
-end)
-
--- หาเป้าในวง + ระยะ
-local function GetTarget()
-	local closestPart = nil
-	local shortest = FOV_RADIUS
-
-	for _, plr in ipairs(Players:GetPlayers()) do
-		if plr ~= LocalPlayer and plr.Character then
-			local part = plr.Character:FindFirstChild(AIM_PART)
-			local hum = plr.Character:FindFirstChild("Humanoid")
-
-			if part and hum and hum.Health > 0 then
-				local distance3D = (Camera.CFrame.Position - part.Position).Magnitude
-				if distance3D > MAX_DISTANCE then continue end
-
-				local pos, onScreen = Camera:WorldToViewportPoint(part.Position)
-				if onScreen then
-					local dist2D = (Vector2.new(pos.X, pos.Y) -
-						Vector2.new(Mouse.X, Mouse.Y)).Magnitude
-
-					if dist2D < shortest then
-						shortest = dist2D
-						closestPart = part
-					end
-				end
-			end
-		end
-	end
-
-	return closestPart
-end
-
--- Update
-RunService.RenderStepped:Connect(function()
-	-- อัปเดตวงเฉพาะตอนเปิด
-	if FOV_ENABLED then
-		FOV.Position = Vector2.new(Mouse.X, Mouse.Y)
-	end
-
-	-- ❗ ถ้า FOV ปิด = aimbot ไม่ทำงาน
-	if not FOV_ENABLED then return end
-
-	if UIS:IsMouseButtonPressed(AIM_KEY) then
-		local target = GetTarget()
-		if target then
-			local camCF = Camera.CFrame
-			local aimCF = CFrame.new(camCF.Position, target.Position)
-			Camera.CFrame = camCF:Lerp(aimCF, SMOOTHNESS)
-		end
-	end
-end)
-
---ESP Players
--- Services
-local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 
-local LocalPlayer = Players.LocalPlayer
-local ESP_ENABLED = false -- เปิด ESP ตั้งแต่เริ่ม
-local ESPs = {}
+local LP = Players.LocalPlayer
+local attached = false
+local target = nil
+local conn = nil
 
--- Toggle ESP ด้วยปุ่ม P
-UserInputService.InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.KeyCode == Enum.KeyCode.P then
-		ESP_ENABLED = not ESP_ENABLED
-		for _, gui in pairs(ESPs) do
-			if gui then
-				gui.Enabled = ESP_ENABLED
-			end
-		end
-	end
-end)
-
--- ฟังก์ชันเพิ่ม ESP ให้ผู้เล่น
-local function addESP(player)
-	if player == LocalPlayer then return end
-
-	local function onCharacter(char)
-		local hrp = char:WaitForChild("HumanoidRootPart", 5)
-		if not hrp then return end
-
-		-- ลบ ESP เก่า
-		if ESPs[player] then
-			if ESPs[player].Connection then
-				ESPs[player].Connection:Disconnect()
-			end
-			ESPs[player]:Destroy()
-		end
-
-		local gui = Instance.new("BillboardGui")
-		gui.Name = "ESP"
-		gui.Adornee = hrp
-		gui.Size = UDim2.fromOffset(200, 50)
-		gui.StudsOffset = Vector3.new(0, 3, 0)
-		gui.AlwaysOnTop = true -- เห็นผ่านวัตถุ
-		gui.Enabled = ESP_ENABLED
-		gui.Parent = hrp
-
-		local label = Instance.new("TextLabel")
-		label.Size = UDim2.fromScale(1, 1)
-		label.BackgroundTransparency = 1
-		label.TextStrokeTransparency = 0
-		label.Font = Enum.Font.SourceSansBold
-		label.TextScaled = true
-		label.Parent = gui
-
-		-- อัปเดต ESP ทุกเฟรม
-		local conn
-		conn = RunService.RenderStepped:Connect(function()
-			if not gui or not gui.Parent then
-				conn:Disconnect()
-				return
-			end
-			if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
-
-			local dist = (LocalPlayer.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
-
-			-- สี ESP ตามทีม (ถ้ามี Teams)
-			local color = Color3.fromRGB(255, 50, 50) -- Default แดง
-			if player.Team == LocalPlayer.Team then
-				color = Color3.fromRGB(50, 255, 50) -- เขียวเพื่อนร่วมทีม
-			end
-
-			label.TextColor3 = color
-			label.Text = player.Name .. " | " .. math.floor(dist) .. "m"
-		end)
-
-		ESPs[player] = gui
-		ESPs[player].Connection = conn
-	end
-
-	if player.Character then
-		onCharacter(player.Character)
-	end
-	player.CharacterAdded:Connect(onCharacter)
+-- รอ Character
+local function getChar(plr)
+    return plr.Character or plr.CharacterAdded:Wait()
 end
 
--- เพิ่ม ESP ให้ผู้เล่นทุกคน
-for _, plr in pairs(Players:GetPlayers()) do
-	addESP(plr)
+-- หา Player ใกล้ที่สุด
+local function getNearestPlayer()
+    local char = getChar(LP)
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    local nearest, dist = nil, math.huge
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LP and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            local d = (p.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
+            if d < dist then
+                dist = d
+                nearest = p
+            end
+        end
+    end
+    return nearest
 end
 
-Players.PlayerAdded:Connect(addESP)
-Players.PlayerRemoving:Connect(function(plr)
-	if ESPs[plr] then
-		if ESPs[plr].Connection then
-			ESPs[plr].Connection:Disconnect()
-		end
-		ESPs[plr]:Destroy()
-		ESPs[plr] = nil
-	end
+-- เริ่มเกาะ (ซ้อนหลังเล็กน้อย)
+local function attachTo(plr)
+    local myChar = getChar(LP)
+    local myHRP = myChar:WaitForChild("HumanoidRootPart")
+    local hum = myChar:WaitForChild("Humanoid")
+    hum.PlatformStand = true -- กันฟิสิกส์เด้ง
+
+    target = plr
+    attached = true
+
+    conn = RunService.Heartbeat:Connect(function()
+        if not attached then return end
+        if not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then return end
+
+        local tHRP = target.Character.HumanoidRootPart
+        -- ปรับ offset ได้ (ด้านหลัง / ด้านบน)
+        local offset = CFrame.new(0, 3, 0)
+        myHRP.CFrame = tHRP.CFrame * offset
+        myHRP.Velocity = Vector3.zero
+    end)
+end
+
+-- ปล่อยเกาะ
+local function detach()
+    attached = false
+    target = nil
+    if conn then conn:Disconnect() conn = nil end
+
+    local char = getChar(LP)
+    char:WaitForChild("Humanoid").PlatformStand = false
+end
+
+-- กด Y
+UIS.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.Y then
+        if attached then
+            detach()
+        else
+            local nearest = getNearestPlayer()
+            if nearest then
+                attachTo(nearest)
+            end
+        end
+    end
 end)
+
+
 
 
 
@@ -314,7 +205,7 @@ local keyNames = {
 	[2] = "กระโดดสูง",
 	[3] = "วาร์ป",
 	[4] = "Lock On",
-	[5] = "ESP Players"
+	[5] = "Attach Follow"
 }
 
 -- สถานะ
@@ -413,11 +304,12 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		states[4] = not states[4]
 		update(4)
 
-	elseif input.KeyCode == Enum.KeyCode.P then
+	elseif input.KeyCode == Enum.KeyCode.Y then
 		states[5] = not states[5]
 		update(5)
 	end
 end)
+
 
 
 
