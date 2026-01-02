@@ -112,7 +112,7 @@ local FOV_ENABLED = true -- 🔵 เปิด = aimbot ทำงาน
 
 -- FOV Circle
 local FOV = Drawing.new("Circle")
-FOV.Color = Color3.fromRGB(0, 200, 255)
+FOV.Color = Color3.fromRGB(255, 255, 255)
 FOV.Thickness = 2
 FOV.NumSides = 100
 FOV.Radius = FOV_RADIUS
@@ -122,7 +122,7 @@ FOV.Visible = FOV_ENABLED
 -- Toggle FOV (ควบคุม aimbot ด้วย)
 UIS.InputBegan:Connect(function(input, gpe)
 	if gpe then return end
-	if input.KeyCode == Enum.KeyCode.B then
+	if input.UserInputType == Enum.UserInputType.MouseButton3 then
 		FOV_ENABLED = not FOV_ENABLED
 		FOV.Visible = FOV_ENABLED
 	end
@@ -178,3 +178,4 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
