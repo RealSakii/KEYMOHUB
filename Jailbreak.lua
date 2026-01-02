@@ -294,7 +294,7 @@ local keyNames = {
 }
 
 -- สถานะ
-local states = {false, false, false, false}
+local states = {false, false, false, false, false}
 
 -- GUI
 local gui = Instance.new("ScreenGui")
@@ -326,7 +326,7 @@ title.Parent = frame
 -- labels
 local labels = {}
 
-for i = 1, 4 do
+for i = 1, 5 do
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.new(0.9, 0, 0, 30)
 	label.Position = UDim2.new(0.05, 0, 0, 40 + (i * 35))
@@ -394,6 +394,7 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		update(5)
 	end
 end)
+
 
 
 
