@@ -1,14 +1,4 @@
-local stgui = game:GetService("StarterGui")
-if not getgenv().DisableNotification then
-	stgui:SetCore("SendNotification", {
-		Title = "Sprite&Best",
-		Icon = "rbxassetid://122816576385645",
-		Text = "Jailbreak",
-		Duration = 10,
-		Button1 = "Dismiss",
-		Callback = function() end
-	})
-end
+
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -190,6 +180,7 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
 
 
 
