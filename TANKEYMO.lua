@@ -116,7 +116,7 @@ local Mouse = LocalPlayer:GetMouse()
 -- SETTINGS
 local AIM_KEY = Enum.UserInputType.MouseButton2
 local FOV_RADIUS = 500
-local MAX_DISTANCE = 250
+local MAX_DISTANCE = 350
 local SMOOTHNESS = 1.5
 local AIM_PART = "HumanoidRootPart"
 
@@ -418,6 +418,7 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		update(5)
 	end
 end)
+
 
 
 
