@@ -191,10 +191,112 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+--Guiเเสดงสถานะ
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
 
+-- ตั้งชื่อปุ่มแต่ละอัน
+local keyNames = {
+	[1] = "วิ่งไว",
+	[2] = "กระโดดสูง",
+	[3] = "วาร์ป",
+	[4] = "Lock On"
+}
 
+-- สถานะ
+local states = {false, false, false, false}
 
+-- GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "CustomKeyGUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
 
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 230)
+frame.Position = UDim2.new(0.4, 0, 0.35, 0)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
 
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 12)
 
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "สถานะฟังชั่น"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+title.Parent = frame
 
+-- labels
+local labels = {}
+
+for i = 1, 4 do
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(0.9, 0, 0, 30)
+	label.Position = UDim2.new(0.05, 0, 0, 40 + (i * 35))
+	label.BackgroundColor3 = Color3.fromRGB(170, 50, 50)
+	label.Text = keyNames[i] .. " [ปิด]"
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.Font = Enum.Font.GothamBold
+	label.TextScaled = true
+	label.Parent = frame
+
+	local c = Instance.new("UICorner", label)
+	c.CornerRadius = UDim.new(0, 8)
+
+	labels[i] = label
+end
+
+-- อัปเดต UI
+local function update(i)
+	if states[i] then
+		labels[i].Text = keyNames[i] .. " [เปิด]"
+		labels[i].BackgroundColor3 = Color3.fromRGB(50, 170, 80)
+	else
+		labels[i].Text = keyNames[i] .. " [ปิด]"
+		labels[i].BackgroundColor3 = Color3.fromRGB(170, 50, 50)
+	end
+end
+
+-- เปิด/ปิด GUI
+local function toggleGUI()
+	guiVisible = not guiVisible
+	frame.Visible = guiVisible
+end
+
+-- ตรวจจับคีย์บอร์ด
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+
+-- Toggle GUI
+	if input.KeyCode == Enum.KeyCode.RightControl then
+		toggleGUI()
+	end
+
+	-- ฟังก์ชัน 1–4
+	if input.KeyCode == Enum.KeyCode.X then
+		states[1] = not states[1]
+		update(1)
+
+	elseif input.KeyCode == Enum.KeyCode.B then
+		states[2] = not states[2]
+		update(2)
+
+	elseif input.KeyCode == Enum.KeyCode.T then
+		labels[3].Text = keyNames[3] .. " [เปิด]"
+		labels[3].BackgroundColor3 = Color3.fromRGB(50, 170, 80)
+		Wait(0.1)
+		labels[3].Text = keyNames[3] .. " [ปิด]"
+		labels[3].BackgroundColor3 = Color3.fromRGB(170, 50, 50)
+
+	elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
+		states[4] = not states[4]
+		update(4)
+	end
+end)
