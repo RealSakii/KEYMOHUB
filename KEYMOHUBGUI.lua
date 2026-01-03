@@ -57,7 +57,7 @@ UICorner.Parent = Frame
 local Title = Instance.new("TextLabel")
 Title.Parent = Frame
 Title.Size = UDim2.new(1,0,0,40)
-Title.Text = "KEYMO HUB"
+Title.Text = "KEYMOHUB"
 Title.TextColor3 = Color3.new(0,170,255)
 Title.BackgroundTransparency = 1
 Title.Font = Enum.Font.GothamBold
@@ -148,6 +148,7 @@ if not getgenv().DisableNotification then
 		Callback = function() end
 	})
 end
+
 
 
 
