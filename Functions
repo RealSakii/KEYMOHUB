@@ -414,7 +414,7 @@ local function detach()
     char:WaitForChild("Humanoid").PlatformStand = false
 end
 
--- กด Y
+--กด Y
 UIS.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.H then
@@ -428,6 +428,109 @@ UIS.InputBegan:Connect(function(input, gp)
         end
     end
 end)
+
+--Flying
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local root = character:WaitForChild("HumanoidRootPart")
+local camera = workspace.CurrentCamera
+
+local flying = false
+local speed = 150
+
+local bv, bg
+local move = {
+	W = false,
+	A = false,
+	S = false,
+	D = false,
+	Space = false,
+	Shift = false
+}
+
+-- เริ่มบิน
+local function startFly()
+	flying = true
+	humanoid.PlatformStand = true
+
+	bv = Instance.new("BodyVelocity")
+	bv.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+	bv.Velocity = Vector3.zero
+	bv.Parent = root
+
+	bg = Instance.new("BodyGyro")
+	bg.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
+	bg.CFrame = root.CFrame
+	bg.Parent = root
+end
+
+-- หยุดบิน
+local function stopFly()
+	flying = false
+	humanoid.PlatformStand = false
+
+	if bv then bv:Destroy() end
+	if bg then bg:Destroy() end
+end
+
+-- กดปุ่ม
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+
+	if input.KeyCode == Enum.KeyCode.N then
+		if flying then
+			stopFly()
+		else
+			startFly()
+		end
+	end
+
+	if input.KeyCode == Enum.KeyCode.W then move.W = true end
+	if input.KeyCode == Enum.KeyCode.A then move.A = true end
+	if input.KeyCode == Enum.KeyCode.S then move.S = true end
+	if input.KeyCode == Enum.KeyCode.D then move.D = true end
+	if input.KeyCode == Enum.KeyCode.Space then move.Space = true end
+	if input.KeyCode == Enum.KeyCode.LeftShift then move.Shift = true end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.W then move.W = false end
+	if input.KeyCode == Enum.KeyCode.A then move.A = false end
+	if input.KeyCode == Enum.KeyCode.S then move.S = false end
+	if input.KeyCode == Enum.KeyCode.D then move.D = false end
+	if input.KeyCode == Enum.KeyCode.Space then move.Space = false end
+	if input.KeyCode == Enum.KeyCode.LeftShift then move.Shift = false end
+end)
+
+-- ควบคุมการบิน
+RunService.RenderStepped:Connect(function()
+	if not flying then return end
+
+	local direction = Vector3.zero
+	local camCF = camera.CFrame
+
+	if move.W then direction += camCF.LookVector end
+	if move.S then direction -= camCF.LookVector end
+	if move.A then direction -= camCF.RightVector end
+	if move.D then direction += camCF.RightVector end
+	if move.Space then direction += camCF.UpVector end
+	if move.Shift then direction -= camCF.UpVector end
+
+	if direction.Magnitude > 0 then
+		direction = direction.Unit * speed
+	end
+
+	bv.Velocity = direction
+	bg.CFrame = camCF
+end)
+
+
+
 
 
 
