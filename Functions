@@ -79,7 +79,7 @@ Mouse.KeyDown:Connect(function(key)
         if enabled then
             Humanoid.WalkSpeed = _G.WS
         else
-            Humanoid.WalkSpeed = 150
+            Humanoid.WalkSpeed = 16
         end
     end
 end)
@@ -495,6 +495,7 @@ frame.Size = UDim2.new(0, 230, 0, 140)
 frame.Position = UDim2.new(0,  1000, 0.4, 0)
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BorderSizePixel = 0
+frame.Visible = false
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
 --// DRAG
@@ -571,7 +572,7 @@ stopBtn.MouseButton1Click:Connect(function()
     stopAll()
 end)
 
---// TOGGLE GUI (RightShift)
+--// TOGGLE GUI (H)
 UIS.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.H then
@@ -679,6 +680,7 @@ RunService.RenderStepped:Connect(function()
 	bv.Velocity = direction
 	bg.CFrame = camCF
 end)
+
 
 
 
