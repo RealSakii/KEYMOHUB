@@ -1,5 +1,5 @@
---ESP Box
---// ESP Box + Tracer + Name + Toggle (LocalScript)
+--// ESP Box + Tracer + Name + Toggle (6)
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -24,7 +24,7 @@ local function CreateESP(player)
 	nameText.Size = 14
 	nameText.Center = true
 	nameText.Outline = true
-	nameText.Font = Enum.Font.GothamBold
+	nameText.Font = 2
 	nameText.Visible = false
 	nameText.Text = player.Name
 
