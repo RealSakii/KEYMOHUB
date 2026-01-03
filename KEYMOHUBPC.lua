@@ -23,18 +23,18 @@ Frame.Draggable = true
 
 local UICorner = Instance.new("UICorner", Frame)
 
-local TitleImage = Instance.new("ImageLabel")
-TitleImage.Parent = Frame
-TitleImage.Size = UDim2.new(1, 0, 0, 40)
-TitleImage.Position = UDim2.new(0, 0, 0, 0)
+local Title = Instance.new("ImageLabel")
+Title.Parent = Frame
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Position = UDim2.new(0, 0, 0, 0)
 
 -- ใส่ Image ID ของคุณตรงนี้
-TitleImage.Image = "rbxassetid://85807223632250"
+Title.Image = "rbxassetid://85807223632250"
 
-TitleImage.BackgroundTransparency = 1
-TitleImage.ScaleType = Enum.ScaleType.Fit
-TitleImage.AnchorPoint = Vector2.new(0.5, 0)
-TitleImage.Position = UDim2.new(0.5, 0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.ScaleType = Enum.ScaleType.Fit
+Title.AnchorPoint = Vector2.new(0.5, 0)
+Title.Position = UDim2.new(0.5, 0, 0, 0)
 
 local TextBox = Instance.new("TextBox")
 TextBox.Parent = Frame
@@ -505,6 +505,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/RealSakii/BestAndSpri
 		Button.Text = "🔑 ยืนยัน KEY"
 	end
 end)
+
 
 
 
