@@ -106,7 +106,7 @@ dragBar.Selectable = true
 local valueLabel = Instance.new("TextLabel", main)
 valueLabel.Position = UDim2.new(0,0,0,40)
 valueLabel.Size = UDim2.new(1,0,0,25)
-valueLabel.Text = "ความเร็ว : 20"
+valueLabel.Text = "ความเร็ว : 150"
 valueLabel.TextColor3 = Color3.fromRGB(200,200,200)
 valueLabel.BackgroundTransparency = 1
 valueLabel.Font = Enum.Font.GothamBold
@@ -414,6 +414,7 @@ UIS.InputBegan:Connect(function(input, gp)
         end
     end
 end)
+
 
 
 
