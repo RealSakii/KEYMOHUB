@@ -711,14 +711,17 @@ RunService.RenderStepped:Connect(function()
 	bg.CFrame = camCF
 end)
 
---// FlingScriptSafe
+-- FlingScriptSafe
+--// SERVICES
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+
+local bav -- BodyAngularVelocity
 local UIS = game:GetService("UserInputService")
 
 local LP = Players.LocalPlayer
 local FLING_POWER = 10000
-local FLING_TIME = 1
+local FLING_TIME = 0.1
 
 --// STATE
 local selectedTarget = nil
@@ -759,6 +762,12 @@ end
 local function stopFling()
     if flingConn then flingConn:Disconnect() flingConn = nil end
     disableNoClip()
+
+    if bav then
+        bav:Destroy()
+        bav = nil
+    end
+
     local char = LP.Character
     if char and oldCFrame then
         char:PivotTo(oldCFrame)
@@ -778,14 +787,22 @@ local function flingTarget(targetHRP)
     hum.PlatformStand = true
     enableNoClip()
 
+    -- BodyVelocity (เดิม)
     local bv = Instance.new("BodyVelocity")
     bv.MaxForce = Vector3.new(1e9,1e9,1e9)
     bv.Parent = hrp
+
+    -- 🔵 BodyAngularVelocity (หมุน)
+    bav = Instance.new("BodyAngularVelocity")
+    bav.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
+    bav.AngularVelocity = Vector3.new(30, 50, 30) -- ปรับความเร็วหมุนได้
+    bav.Parent = hrp
 
     flingConn = RunService.Heartbeat:Connect(function()
         if not targetHRP or not targetHRP.Parent then
             stopFling()
             bv:Destroy()
+            if bav then bav:Destroy() end
             return
         end
 
@@ -796,6 +813,7 @@ local function flingTarget(targetHRP)
     task.delay(FLING_TIME, function()
         stopFling()
         bv:Destroy()
+        if bav then bav:Destroy() end
     end)
 end
 
@@ -934,6 +952,7 @@ do
         end
     end)
 end
+
 
 
 
