@@ -61,7 +61,7 @@ TitleImage.Size = UDim2.new(1, -20, 0, 50)
 TitleImage.Position = UDim2.new(0, 10, 0, 10)
 
 -- ⚠️ ใส่ Image ID ของคุณตรงนี้
-TitleImage.Image = "rbxassetid://7072718369" -- ใช้อันนี้ทดสอบ ต้องขึ้นแน่นอน
+TitleImage.Image = "rbxassetid://109159489030155" -- ใช้อันนี้ทดสอบ ต้องขึ้นแน่นอน
 
 TitleImage.BackgroundTransparency = 1
 TitleImage.ScaleType = Enum.ScaleType.Fit
@@ -140,6 +140,7 @@ UserInputService.InputBegan:Connect(function(input, gp)
 end)
 
 ----
+
 
 
 
