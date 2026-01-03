@@ -485,114 +485,7 @@ UIS.InputBegan:Connect(function(input, gp)
 end)
 
 --ESP PLAYERS
---// ESP Box + Tracer + Name + Toggle (LocalScript)
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local Camera = workspace.CurrentCamera
-local LocalPlayer = Players.LocalPlayer
 
-local ESP = {}
-local ESP_ENABLED = false
-
--- สร้าง ESP
-local function CreateESP(player)
-	if player == LocalPlayer then return end
-
-	local box = Drawing.new("Square")
-	box.Color = Color3.fromRGB(255, 0, 0)
-	box.Thickness = 2
-	box.Filled = false
-	box.Visible = false
-
-	local nameText = Drawing.new("Text")
-	nameText.Color = Color3.fromRGB(255, 255, 255)
-	nameText.Size = 14
-	nameText.Center = true
-	nameText.Outline = true
-	nameText.Font = Enum.Font.GothamBold
-	nameText.Visible = false
-	nameText.Text = player.Name
-
-	ESP[player] = {
-		Box = box,
-		Name = nameText
-	}
-end
-
--- ลบ ESP
-local function RemoveESP(player)
-	if ESP[player] then
-		for _, v in pairs(ESP[player]) do
-			v:Remove()
-		end
-		ESP[player] = nil
-	end
-end
-
--- Toggle ESP ด้วยปุ่ม P
-UserInputService.InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.KeyCode == Enum.KeyCode.P then
-		ESP_ENABLED = not ESP_ENABLED
-
-		if not ESP_ENABLED then
-			for _, esp in pairs(ESP) do
-				esp.Box.Visible = false
-				esp.Name.Visible = false
-			end
-		end
-	end
-end)
-
--- อัปเดตทุกเฟรม
-RunService.RenderStepped:Connect(function()
-	if not ESP_ENABLED then return end
-
-	for player, esp in pairs(ESP) do
-		local char = player.Character
-		local hrp = char and char:FindFirstChild("HumanoidRootPart")
-		local hum = char and char:FindFirstChild("Humanoid")
-
-		if hrp and hum and hum.Health > 0 then
-			local pos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
-
-			if onScreen then
-				local scale = math.clamp(3000 / pos.Z, 20, 300)
-				local size = Vector2.new(scale, scale * 1.5)
-
-				-- Box
-				esp.Box.Size = size
-				esp.Box.Position = Vector2.new(
-					pos.X - size.X / 2,
-					pos.Y - size.Y / 2
-				)
-				esp.Box.Visible = true
-
-				-- Name
-				esp.Name.Position = Vector2.new(
-					pos.X,
-					pos.Y - size.Y / 2 - 14
-				)
-				esp.Name.Visible = true
-			else
-				esp.Box.Visible = false
-				esp.Name.Visible = false
-			end
-		else
-			esp.Box.Visible = false
-			esp.Name.Visible = false
-		end
-	end
-end)
-
--- โหลดผู้เล่น
-for _, player in ipairs(Players:GetPlayers()) do
-	CreateESP(player)
-end
-
-Players.PlayerAdded:Connect(CreateESP)
-Players.PlayerRemoving:Connect(RemoveESP)
 
 
 
@@ -629,6 +522,7 @@ if not getgenv().DisableNotification then
 		Callback = function() end
 	})
 end
+
 
 
 
