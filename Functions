@@ -1,33 +1,47 @@
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 local humanoid
 local infiniteJump = false
+local holdingSpace = false
 
 local NORMAL_SPEED = 20
-local RUN_SPEED = 150
 
 local function setupCharacter(char)
-    humanoid = char:WaitForChild("Humanoid")
-    humanoid.WalkSpeed = NORMAL_SPEED
+	humanoid = char:WaitForChild("Humanoid")
+	humanoid.WalkSpeed = NORMAL_SPEED
 end
 
 setupCharacter(player.Character or player.CharacterAdded:Wait())
 player.CharacterAdded:Connect(setupCharacter)
 
+-- ตรวจปุ่มกด
 UserInputService.InputBegan:Connect(function(input, gp)
-    if gp then return end
+	if gp then return end
 
-    -- เปิด/ปิด กระโดดไม่จำกัด
-    if input.KeyCode == Enum.KeyCode.B then
-        infiniteJump = not infiniteJump
-    end
+	-- เปิด/ปิด Infinite Jump
+	if input.KeyCode == Enum.KeyCode.B then
+		infiniteJump = not infiniteJump
+	end
 
-    -- Infinite Jump
-    if infiniteJump and input.KeyCode == Enum.KeyCode.Space then
-        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    end
+	if input.KeyCode == Enum.KeyCode.Space then
+		holdingSpace = true
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.Space then
+		holdingSpace = false
+	end
+end)
+
+-- กระโดดค้าง
+RunService.RenderStepped:Connect(function()
+	if infiniteJump and holdingSpace and humanoid then
+		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+	end
 end)
 
 --Speed
@@ -414,6 +428,7 @@ UIS.InputBegan:Connect(function(input, gp)
         end
     end
 end)
+
 
 
 
