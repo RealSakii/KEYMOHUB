@@ -128,12 +128,13 @@ if not getgenv().DisableNotification then
 	stgui:SetCore("SendNotification", {
 		Title = "KEYMOHUB",
 		Icon = "rbxassetid://109159489030155",
-		Text = "KEYMOHUB",
+		Text = "Status",
 		Duration = 10,
 		Button1 = "Dismiss",
 		Callback = function() end
 	})
 end
+
 
 
 
