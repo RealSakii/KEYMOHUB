@@ -34,21 +34,38 @@ frame.Parent = gui
 local corner = Instance.new("UICorner", frame)
 corner.CornerRadius = UDim.new(0, 12)
 
+-- สร้าง ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "KEYMOHUB_GUI"
+ScreenGui.Parent = game:GetService("CoreGui")
+
+-- สร้าง Frame
+local Frame = Instance.new("Frame")
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 350, 0, 200)
+Frame.Position = UDim2.new(0.5, -175, 0.5, -100)
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.BorderSizePixel = 0
+Frame.ZIndex = 1
+
+-- มุมโค้ง
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = Frame
+
+-- 🔵 โลโก้ KEYMOHUB (ImageLabel)
 local TitleImage = Instance.new("ImageLabel")
 TitleImage.Parent = Frame
-TitleImage.Name = "TitleImage"
-TitleImage.Size = UDim2.new(1, 0, 0, 40)
-TitleImage.Position = UDim2.new(0, 0, 0, 0)
+TitleImage.Name = "KEYMOHUB_LOGO"
+TitleImage.Size = UDim2.new(1, -20, 0, 50)
+TitleImage.Position = UDim2.new(0, 10, 0, 10)
+
+-- ⚠️ ใส่ Image ID ของคุณตรงนี้
+TitleImage.Image = "rbxassetid://7072718369" -- ใช้อันนี้ทดสอบ ต้องขึ้นแน่นอน
 
 TitleImage.BackgroundTransparency = 1
-TitleImage.ImageTransparency = 0
-TitleImage.ImageColor3 = Color3.fromRGB(255,255,255)
 TitleImage.ScaleType = Enum.ScaleType.Fit
-
--- ⚠️ ใส่ Image ID แบบนี้เท่านั้น
-TitleImage.Image = "rbxassetid://85807223632250"
-
-TitleImage.ZIndex = 10
+TitleImage.ZIndex = 5
 
 -- labels
 local labels = {}
@@ -123,6 +140,7 @@ UserInputService.InputBegan:Connect(function(input, gp)
 end)
 
 ----
+
 
 
 
