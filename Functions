@@ -39,7 +39,7 @@ local Mouse = Player:GetMouse()
 -- VARIABLES
 local Humanoid
 local enabled = false
-_G.WS = 20
+_G.WS = 150
 
 -- CHARACTER LOAD / RESPAWN
 local function SetupCharacter(char)
@@ -65,7 +65,7 @@ Mouse.KeyDown:Connect(function(key)
         if enabled then
             Humanoid.WalkSpeed = _G.WS
         else
-            Humanoid.WalkSpeed = 20
+            Humanoid.WalkSpeed = 150
         end
     end
 end)
@@ -414,3 +414,4 @@ UIS.InputBegan:Connect(function(input, gp)
         end
     end
 end)
+
