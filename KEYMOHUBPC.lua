@@ -509,6 +509,8 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/RealSakii/BestAndSpri
 	end
 end)
 
+local stgui = game:GetService("StarterGui")
+
 if not getgenv().DisableNotification then
 	stgui:SetCore("SendNotification", {
 		Title = "KEYMOHUB",
@@ -519,6 +521,7 @@ if not getgenv().DisableNotification then
 		Callback = function() end
 	})
 end
+
 
 
 
