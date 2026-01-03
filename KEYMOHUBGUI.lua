@@ -43,7 +43,7 @@ ScreenGui.Parent = game:GetService("CoreGui")
 -- สร้าง Frame
 local Frame = Instance.new("Frame")
 Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 350, 0, 200)
+Frame.Size = UDim2.new(0, 350, 0, 250)
 Frame.Position = UDim2.new(0.5, -175, 0.5, -100)
 Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Frame.BorderSizePixel = 0
@@ -153,6 +153,7 @@ if not getgenv().DisableNotification then
 		Callback = function() end
 	})
 end
+
 
 
 
