@@ -1,44 +1,53 @@
-----
---Guiเเสดงสถานะ
+--======================--
+--      KEYMOHUB GUI    --
+--  แยกหมวดหมู่ Status  --
+--======================--
+
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
--- ตั้งชื่อปุ่มแต่ละอัน
-local keyNames = {
-	[1] = "วิ่งไว(X/RightControl)",
-	[2] = "กระโดดสูง(B)",
-	[3] = "วาร์ป(T)",
-	[4] = "Lock On(M3)",
-	[5] = "บินไปหา(H)",
-	[6] = "ESP Box(P)",
-    [7] = "บินลอย(N)",
-    [8] = "SAFE FLING(G)"
+-- GUI visibility
+local guiVisible = true
+
+-- ชื่อฟังก์ชันและหมวดหมู่
+local categories = {
+    Movement = {
+        {name="วิ่งไว (X/RightControl)", key=Enum.KeyCode.X, state=false},
+        {name="กระโดดสูง (B)", key=Enum.KeyCode.B, state=false},
+        {name="วาร์ป (T)", key=Enum.KeyCode.T, state=false},
+        {name="บินไปหา (H)", key=Enum.KeyCode.H, state=false},
+        {name="บินลอย (N)", key=Enum.KeyCode.N, state=false},
+    },
+    Combat = {
+        {name="Lock On (M3)", key=Enum.UserInputType.MouseButton3, state=false},
+        {name="SAFE FLING (G)", key=Enum.KeyCode.G, state=false},
+    },
+    Visual = {
+        {name="ESP Box (P)", key=Enum.KeyCode.P, state=false},
+    }
 }
 
--- สถานะ
-local states = {false, false, false, false, false, false}
-
--- GUI
+-- สร้าง GUI
 local gui = Instance.new("ScreenGui")
-gui.Name = "CustomKeyGUI"
+gui.Name = "KEYMOHUB_GUI"
 gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 350)
-frame.Position = UDim2.new(0.5, -150, 0.5, -85)
+frame.Size = UDim2.new(0, 350, 0, 500)
+frame.Position = UDim2.new(0.5, -175, 0.5, -250)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.Active = true
 frame.Visible = true
 frame.Draggable = true
 frame.Parent = gui
-
 local corner = Instance.new("UICorner", frame)
 corner.CornerRadius = UDim.new(0, 12)
 
+-- Title
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
+title.Size = UDim2.new(1, 0, 0, 50)
 title.BackgroundTransparency = 1
 title.Text = "KEYMOHUB"
 title.TextColor3 = Color3.fromRGB(0,170,255)
@@ -46,127 +55,81 @@ title.Font = Enum.Font.GothamBold
 title.TextScaled = true
 title.Parent = frame
 
--- labels
+-- ลำดับหมวดหมู่ใหม่: Combat -> Movement -> Visual
+local categoryOrder = {"Combat", "Movement", "Visual"}
+
+-- แยกหมวดหมู่
+local yOffset = 50
 local labels = {}
 
-for i = 1, 8 do
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(0.9, 0, 0, 30)
-	label.Position = UDim2.new(0.05, 0, 0, 40 + (i * 35))
-	label.BackgroundColor3 = Color3.fromRGB(170, 50, 50)
-	label.Text = keyNames[i] .. ": ปิด"
-	label.TextColor3 = Color3.fromRGB(255, 255, 255)
-	label.Font = Enum.Font.GothamBold
-	label.TextScaled = true
-	label.Parent = frame
+for _, categoryName in ipairs(categoryOrder) do
+    local funcs = categories[categoryName]
+    if funcs then
+        -- หมวดหมู่ Label
+        local catLabel = Instance.new("TextLabel")
+        catLabel.Size = UDim2.new(0.95, 0, 0, 30)
+        catLabel.Position = UDim2.new(0.025, 0, 0, yOffset)
+        catLabel.BackgroundColor3 = Color3.fromRGB(40,40,40)
+        catLabel.Text = categoryName
+        catLabel.TextColor3 = Color3.fromRGB(0,170,255)
+        catLabel.Font = Enum.Font.GothamBold
+        catLabel.TextScaled = true
+        catLabel.Parent = frame
+        local c = Instance.new("UICorner", catLabel)
+        c.CornerRadius = UDim.new(0,8)
+        yOffset = yOffset + 35
 
-	local c = Instance.new("UICorner", label)
-	c.CornerRadius = UDim.new(0, 8)
+        -- ฟังก์ชันแต่ละอัน
+        for i, func in ipairs(funcs) do
+            local label = Instance.new("TextLabel")
+            label.Size = UDim2.new(0.9, 0, 0, 30)
+            label.Position = UDim2.new(0.05, 0, 0, yOffset)
+            label.BackgroundColor3 = Color3.fromRGB(170,50,50)
+            label.Text = func.name .. ": ปิด"
+            label.TextColor3 = Color3.fromRGB(255,255,255)
+            label.Font = Enum.Font.GothamBold
+            label.TextScaled = true
+            label.Parent = frame
+            local corner = Instance.new("UICorner", label)
+            corner.CornerRadius = UDim.new(0,8)
 
-	labels[i] = label
+            labels[func] = label
+            yOffset = yOffset + 35
+        end
+
+        yOffset = yOffset + 10 -- เว้นระยะระหว่างหมวดหมู่
+    end
 end
 
--- อัปเดต UI
-local function update(i)
-	if states[i] then
-		labels[i].Text = keyNames[i] .. ": เปิด"
-		labels[i].BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-	else
-		labels[i].Text = keyNames[i] .. ": ปิด"
-		labels[i].BackgroundColor3 = Color3.fromRGB(170, 50, 50)
-	end
+-- ฟังก์ชันอัปเดต Status
+local function updateLabel(func)
+    local label = labels[func]
+    if func.state then
+        label.Text = func.name .. ": เปิด"
+        label.BackgroundColor3 = Color3.fromRGB(0,170,255)
+    else
+        label.Text = func.name .. ": ปิด"
+        label.BackgroundColor3 = Color3.fromRGB(170,50,50)
+    end
 end
 
--- เปิด/ปิด GUI
-local function toggleGUI()
-	guiVisible = not guiVisible
-	frame.Visible = guiVisible
-end
-
--- ตรวจจับคีย์บอร์ด
+-- ตรวจจับคีย์
 UserInputService.InputBegan:Connect(function(input, gp)
-	if gp then return end
+    if gp then return end
 
--- Toggle GUI
-	if input.KeyCode == Enum.KeyCode.LeftControl then
-		toggleGUI()
-	end
+    -- Toggle GUI
+    if input.KeyCode == Enum.KeyCode.LeftControl then
+        guiVisible = not guiVisible
+        frame.Visible = guiVisible
+    end
 
-	-- ฟังก์ชัน
-	if input.KeyCode == Enum.KeyCode.X then
-		states[1] = not states[1]
-		update(1)
-
-	elseif input.KeyCode == Enum.KeyCode.B then
-		states[2] = not states[2]
-		update(2)
-
-	elseif input.KeyCode == Enum.KeyCode.T then
-		labels[3].Text = keyNames[3] .. ": เปิด"
-		labels[3].BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-		Wait(0.1)
-		labels[3].Text = keyNames[3] .. ": ปิด"
-		labels[3].BackgroundColor3 = Color3.fromRGB(170, 50, 50)
-
-	elseif input.UserInputType == Enum.UserInputType.MouseButton3 then
-		states[4] = not states[4]
-		update(4)
-
-	elseif input.KeyCode == Enum.KeyCode.H then
-		states[5] = not states[5]
-		update(5)
-
-	elseif input.KeyCode == Enum.KeyCode.P then
-		states[6] = not states[6]
-		update(6)
-
-    elseif input.KeyCode == Enum.KeyCode.N then
-		states[7] = not states[7]
-		update(7)
-
-elseif input.KeyCode == Enum.KeyCode.G then
-		states[8] = not states[8]
-		update(8)
-	end
+    -- Loop ผ่านหมวดหมู่
+    for _, funcs in pairs(categories) do
+        for _, func in ipairs(funcs) do
+            if (input.KeyCode and input.KeyCode == func.key) or (input.UserInputType and input.UserInputType == func.key) then
+                func.state = not func.state
+                updateLabel(func)
+            end
+        end
+    end
 end)
-
-----
-
-local stgui = game:GetService("StarterGui")
-
-if not getgenv().DisableNotification then
-	stgui:SetCore("SendNotification", {
-		Title = "KEYMOHUB",
-		Icon = "rbxassetid://109159489030155",
-		Text = "Status",
-		Duration = 10,
-		Button1 = "Dismiss",
-		Callback = function() end
-	})
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
